@@ -1,3 +1,11 @@
+const searchBar = document.querySelector('#search-box');
+const searchButton = document.querySelector('#top-bar>button');
+const content = document.querySelector('#content');
+let city = document.querySelector('#city');
+let condition = document.querySelector('#condition');
+let temp = document.querySelector('#temp');
+let humidity = document.querySelector('#humi');
+
 //Connect to the API
 async function getData(location) {
   try {
@@ -11,18 +19,26 @@ async function getData(location) {
   }
 }
 
-async function processData (location){
+async function processData(location) {
   const data = await getData(location);
   console.log(data);
   return {
+    city: data.location.name,
+    condition: data.current.condition.text,
     temperatureC: data.current.temp_c,
     temperatureF: data.current.temp_f,
     humidity: data.current.humidity,
-    condition: data.current.condition.text
-  }
-};
-
-async function displayData (location){
-  const data = await processData(location);
-  
+  };
 }
+
+async function displayData(location) {
+  const data = await processData(location);
+  city.textContent = data.city;
+  condition.textContent = data.condition;
+  temp.textContent = `${data.temperatureC} degrees Celsius`;
+  humidity.textContent = `${data.humidity}%`;
+}
+
+searchButton.addEventListener('click', () => {
+  displayData(searchBar.value);
+});
